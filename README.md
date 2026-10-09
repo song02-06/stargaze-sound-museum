@@ -49,6 +49,31 @@ npm run dev
 > 录音需要浏览器麦克风权限，`localhost` 属于安全上下文，可以直接用；
 > 若用局域网 IP 访问，需要 HTTPS。
 
+## 仓库结构
+
+本仓库是「星轨 · 声音博物馆」的完整交付，包含两个迭代版本与配套文档：
+
+| 路径 | 说明 |
+| --- | --- |
+| `code1.0/` | 第一版实现：`backend/`（Spring Boot，包名 `com.yourname.museum`）+ `frontend/`（Vue3 + Vite）+ `tools/` |
+| `code2.0/` | 第二版实现：重构后的后端（包名 `com.starmuseum`，拆出 `asr` / `audit` / `sign` / `media` / `web` 分层）与前端（Vue Router + 多视图），另含 `设计参考/` 高保真稿 |
+| `docs/` | 素材来源登记、参考项目核实结果、实现截图 |
+| `tools/verify-sync.ps1` | 本地与远程仓库同步校验脚本，见下文 |
+| `实施手册.md`、`design-qa.md` | 实施步骤与设计自查结论 |
+
+> `code1.0/`、`code2.0/` 下各自保留了独立的 `.gitignore`。根目录 `.gitignore` 额外排除了
+> `reference/`（863 MB 的第三方参考项目，他人代码、各有许可证，不随本仓库分发）
+> 以及 `node_modules/`、`target/`、`dist/`、运行期 `data/` 等构建与运行产物。
+
+## 校验本地与远程是否同步
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/verify-sync.ps1
+```
+
+依次校验**提交历史、文件清单、工作区状态、分支结构**四项，全部一致时输出
+「本地与远程完全同步 ✔」并以退出码 `0` 结束；存在差异时列出具体条目并返回 `1`。
+
 ## 目录结构
 
 ```
