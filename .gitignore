@@ -1,0 +1,30 @@
+# ---- 第三方参考项目：别人的 repo clone，各有许可证，不进本仓库 ----
+reference/
+
+# ---- 本地运行日志 ----
+.run/
+*.log
+
+# ---- 根目录杂项（疑似误建的空文件） ----
+/0
+
+# ---- 各子项目另有自己的 .gitignore，这里兜底一遍 ----
+node_modules/
+dist/
+target/
+*.jar
+*.war
+**/data/
+**/data.prev/
+*.mv.db
+*.lock.db
+application-local.yml
+*.local
+
+# ---- IDE / 系统 ----
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

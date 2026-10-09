@@ -1,0 +1,30 @@
+# ---- Java / Maven ----
+backend/target/
+*.jar
+*.war
+
+# ---- 运行期数据（音频 + H2 库）：按计划书约定不提交 ----
+backend/data*/
+
+# ---- Node / Vite ----
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+
+# ---- IDE ----
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# ---- 系统 ----
+.DS_Store
+Thumbs.db
+
+# ---- 密钥：绝对不要提交 ----
+application-local.yml
+*.env
+
+# ---- 第三方参考项目：只读参考，不进本仓库 ----
+# 这些是 clone 下来的别人代码，各有各的许可证，不要提交、不要混进 src/
+reference/
