@@ -1,0 +1,225 @@
+/* ============================================================
+   星轨 · 声音博物馆 —— 设计令牌
+   气质定位：安静的夜间博物馆。星空是背景，声音是展品，
+   文字用衬线体给出「档案感」，界面控件用无衬线体保证可读性。
+   ============================================================ */
+
+:root {
+  /* 底色：向参考图靠的紫调夜空 —— 纯黑会让所有彩色卡片显得脏 */
+  --bg: #0d0b18;
+  --bg-soft: #14122a;
+
+  /* 文字三级层次 */
+  --ink: #eef2ff;
+  --ink-2: rgba(238, 242, 255, 0.74);
+  --ink-3: rgba(238, 242, 255, 0.44);
+
+  /* 星光的冷色与历史彩蛋的暖色 */
+  --accent: #9fd8ff;
+  --accent-dim: rgba(159, 216, 255, 0.16);
+  --warm: #ffcf99;
+  --warm-dim: rgba(255, 207, 153, 0.16);
+  --danger: #ff9a9a;
+
+  --line: rgba(159, 216, 255, 0.14);
+  --line-strong: rgba(159, 216, 255, 0.3);
+
+  --glass: rgba(22, 20, 40, 0.66);
+  --glass-solid: rgba(18, 16, 34, 0.92);
+  --shadow: 0 26px 70px rgba(0, 0, 0, 0.55);
+
+  --r-lg: 24px;
+  --r-md: 16px;
+  --r-sm: 10px;
+  --r-pill: 999px;
+
+  --font-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --font-display: "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, "SimSun", serif;
+
+  --header-h: 64px;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(159, 216, 255, 0.3);
+}
+
+/* 滚动条：细，且不抢视觉 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(159, 216, 255, 0.22) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(159, 216, 255, 0.18);
+  border-radius: var(--r-pill);
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- 通用元件 ---------- */
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: var(--r-pill);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  background: rgba(14, 20, 40, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(159, 216, 255, 0.5);
+  box-shadow: 0 14px 34px rgba(159, 216, 255, 0.16);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn.primary {
+  background: linear-gradient(120deg, rgba(159, 216, 255, 0.95), rgba(255, 207, 153, 0.9));
+  color: #05101f;
+  font-weight: 600;
+  border-color: transparent;
+}
+
+.btn.primary:hover:not(:disabled) {
+  box-shadow: 0 18px 44px rgba(159, 216, 255, 0.3);
+}
+
+.btn.lg {
+  padding: 16px 46px;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+}
+
+.chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.chip.warm {
+  color: var(--warm);
+  border-color: rgba(255, 207, 153, 0.32);
+  background: var(--warm-dim);
+}
+
+.chip.cool {
+  color: var(--accent);
+  border-color: rgba(159, 216, 255, 0.3);
+  background: var(--accent-dim);
+}
+
+/* 显示级标题：衬线体，用字号拉开层次 */
+.display {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.4vw, 48px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  margin: 0;
+  /* 星球本体是亮的，标题必须自带一层暗影才压得住 */
+  text-shadow: 0 2px 26px rgba(4, 6, 15, 0.9), 0 0 10px rgba(4, 6, 15, 0.7);
+}
+
+.display em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.lede {
+  font-size: clamp(14px, 1.3vw, 16px);
+  color: var(--ink-2);
+  line-height: 2;
+  margin: 0;
+  text-shadow: 0 1px 18px rgba(4, 6, 15, 0.92), 0 0 8px rgba(4, 6, 15, 0.75);
+}
+
+/* 页面切换动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.34s ease, transform 0.34s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
