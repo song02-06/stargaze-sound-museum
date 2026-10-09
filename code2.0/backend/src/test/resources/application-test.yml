@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:museum-test;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+museum:
+  # 测试上传的东西落到 target/ 下，别碰 data/audio ——
+  # 那是演示数据的地方，测试失败时会把垃圾留在里面
+  audio-root: ./target/test-audio
+  admin:
+    token: test-admin-token
+  sign:
+    provider: mock
+
+logging:
+  level:
+    com.starmuseum: WARN

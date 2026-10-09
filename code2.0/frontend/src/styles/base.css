@@ -1,0 +1,213 @@
+/* 基础层：重置 + 共用控件 + 浏览器表面。
+   最后一组（选区、光标、滚动条、焦点环、下划线、表格数字）是
+   「被建造」和「被组装」之间最便宜的分界线，也最容易漏。 */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  min-height: 100dvh;
+}
+
+/* 打捞期间锁住滚动：幕布盖着的时候，底下的页面不该跟着动 */
+html.is-drawing,
+html.is-drawing body {
+  overflow: hidden;
+}
+
+/* ---------- 浏览器表面 ---------- */
+
+::selection {
+  background: rgba(201, 169, 107, 0.30);
+  color: #fff;
+}
+
+* {
+  caret-color: var(--brass);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.10);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.20);
+  background-clip: content-box;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 1px solid var(--brass);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- 元素 ---------- */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 0.35em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+svg {
+  display: block;
+}
+
+/* 时间码与编号用等宽数字，避免逐秒跳动时宽度抖动 */
+time,
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- 共用控件 ---------- */
+
+.rail {
+  padding-inline: var(--rail);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 32px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.015);
+  color: var(--ink);
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+  transition: border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.btn:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.btn.primary {
+  border-color: var(--brass-2);
+  background: var(--brass-3);
+}
+
+.btn.primary:hover:not(:disabled) {
+  border-color: rgba(201, 169, 107, 0.55);
+  background: rgba(201, 169, 107, 0.14);
+}
+
+.btn.quiet {
+  border-color: transparent;
+  padding-inline: 8px;
+  color: var(--ink-2);
+}
+
+.btn.quiet:hover:not(:disabled) {
+  background: transparent;
+  color: var(--ink);
+}
+
+.hairline {
+  height: 1px;
+  background: var(--line);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--ink-4);
+  text-transform: uppercase;
+}
+
+.brass {
+  color: var(--brass);
+}
+
+.serif {
+  font-family: var(--serif);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

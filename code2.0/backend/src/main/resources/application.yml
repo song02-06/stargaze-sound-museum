@@ -1,0 +1,78 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: starmuseum
+  datasource:
+    url: jdbc:h2:file:./data/museum;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Shanghai
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 10MB
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+museum:
+  # 音频总目录。展品、回音、历史之声按子目录分开存
+  audio-root: ./data/audio
+
+  limits:
+    exhibit-min-seconds: 10      # 产品定义 3.7：主声音 10–60 秒
+    exhibit-max-seconds: 60
+    echo-min-seconds: 10         # 语音回音 10–30 秒
+    echo-max-seconds: 30
+    sign-max-chars: 60           # 展签 30–60 字
+    sign-min-chars: 20
+
+  draw:
+    heritage-rate: 0.12          # 打捞到历史之声的概率
+    heritage-guarantee-draws: 3  # 新用户前 N 次必出一次彩蛋
+
+  sign:
+    # 展签压缩：mock = 本地确定性压缩（只做减法，可离线）
+    #            remote = 调 OpenAI 兼容接口，输出必须过 SignGuard，过不了就退回 mock
+    provider: mock
+    base-url: ${AI_BASE_URL:}
+    api-key: ${AI_API_KEY:}
+    model: ${AI_MODEL:}
+    timeout-ms: 12000
+
+  asr:
+    # mock = 不联网、不需要 Key，用来跑通链路与断网兜底
+    # baidu = 百度短语音识别（密钥放 application-local.yml，或走环境变量）
+    provider: ${ASR_PROVIDER:mock}
+    baidu:
+      app-id: ${BAIDU_APP_ID:}
+      api-key: ${BAIDU_API_KEY:}
+      secret-key: ${BAIDU_SECRET_KEY:}
+      dev-pid: 1537
+    # 展品音频也转写一遍，用来做隐私检查（产品定义 5.4 的承诺）。
+    # 关掉可以省额度，但那样「音频里有没有别人的隐私」就没人查了。
+    exhibit-privacy-check: true
+
+  admin:
+    # 留空 = 管理后台关闭（安全默认）。
+    # 要启用：设环境变量 ADMIN_TOKEN，或在 application-local.yml 里配。
+    token: ${ADMIN_TOKEN:}
+
+  audit:
+    # 审核三路：规则（本地 DFA）→ AI（可 Mock）→ 人工复审队列
+    ai-provider: mock
+
+logging:
+  level:
+    com.starmuseum: INFO

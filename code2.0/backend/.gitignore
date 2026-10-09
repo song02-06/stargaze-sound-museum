@@ -1,0 +1,13 @@
+target/
+
+# 数据库与音频都不要进仓库
+data/
+
+# 本地密钥。用 -Dspring-boot.run.profiles=local 启用。
+application-local.yml
+config/application-local.yml
+*.local
+
+# 日志
+*.log
+logs/

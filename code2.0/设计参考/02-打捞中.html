@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>02 打捞中 · 深空展厅</title>
+<link rel="stylesheet" href="frame.css">
+<style>
+  .filament {
+    position: absolute; left: 719.5px; top: 150px; width: 1px; height: 412px;
+    background: linear-gradient(to bottom,
+      rgba(200, 220, 255, 0) 0%,
+      rgba(200, 220, 255, 0.10) 38%,
+      rgba(214, 232, 255, 0.45) 82%,
+      rgba(236, 245, 255, 0.95) 100%);
+  }
+
+  /* 光点是这一帧的「主体」——它是场景里的一盏灯，不是装饰阴影，所以用材质渲染它。 */
+  .knot { position: absolute; left: 720px; top: 562px; }
+  .knot::before {
+    content: ""; position: absolute; left: -34px; top: -34px;
+    width: 68px; height: 68px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%,
+      #ffffff 0%, rgba(236, 245, 255, 0.72) 9%,
+      rgba(178, 208, 250, 0.30) 26%, rgba(112, 160, 235, 0.10) 48%, transparent 72%);
+  }
+
+  .ripple {
+    position: absolute; left: 720px; top: 562px; transform: translate(-50%, -50%);
+    border: 1px solid rgba(190, 215, 255, 0.09); border-radius: 50%;
+  }
+
+  .caption {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 112px;
+    font-family: var(--serif); font-size: 13px; font-weight: 300;
+    letter-spacing: 0.52em; color: var(--ink-3); text-indent: 0.52em;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="nebula"></div>
+  <div class="stars" id="stars"></div>
+  <div class="vignette"></div>
+
+  <div class="ripple" style="width:118px;height:118px;opacity:.55"></div>
+  <div class="ripple" style="width:196px;height:196px;opacity:.34"></div>
+  <div class="ripple" style="width:300px;height:300px;opacity:.18"></div>
+
+  <div class="filament"></div>
+  <div class="knot"></div>
+
+  <p class="caption">正在星空里打捞</p>
+</div>
+
+<script src="wave.js"></script>
+<script src="check.js"></script>
+<script>
+  scatterStars('#stars', 300);
+</script>
+</body>
+</html>

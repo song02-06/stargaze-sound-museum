@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>03 展品 · 深空展厅</title>
+<link rel="stylesheet" href="frame.css">
+<style>
+  .trace-wrap { position: absolute; left: 400px; top: 234px; }
+
+  .plaque { position: absolute; left: 0; right: 0; text-align: center; }
+  .plaque h1 {
+    font-family: var(--serif); font-size: 39px; font-weight: 400;
+    letter-spacing: 0.06em; color: var(--ink);
+  }
+  .plaque .meta {
+    font-size: 12px; letter-spacing: normal; color: var(--brass); margin-top: 20px;
+  }
+  .plaque .story {
+    font-family: var(--serif); font-size: 16px; font-weight: 300; line-height: 2.15;
+    color: var(--ink-2); max-width: 430px; margin: 30px auto 0;
+  }
+  .plaque .switch {
+    display: inline-block; margin-top: 30px;
+    font-size: 11px; letter-spacing: 0.30em; color: var(--brass);
+    border-bottom: 1px solid var(--brass-2); padding-bottom: 5px;
+  }
+
+  .foot {
+    position: absolute; left: 56px; right: 56px; bottom: 54px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .foot .left { display: flex; align-items: center; gap: 20px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="nebula"></div>
+  <div class="stars" id="stars"></div>
+  <div class="vignette"></div>
+
+  <header class="topbar">
+    <div class="nav"><span>‹ 回到馆藏</span></div>
+    <div class="nav"><span>我的声音</span></div>
+  </header>
+  <div class="hairline" style="top:77px;"></div>
+
+  <div class="baseline"></div>
+  <div class="trace-wrap"><svg class="trace" id="trace"></svg></div>
+
+  <div class="plaque" style="top:468px;">
+    <h1>外婆家屋檐下的雨</h1>
+    <p class="meta">Nº 0247 · 2026.07.18 · 广州 · 老城区</p>
+    <p class="story">八岁那年夏天，外婆家的雨。瓦片上的声音，现在还记得。</p>
+    <span class="switch">看全文</span>
+  </div>
+
+  <div class="foot">
+    <div class="left">
+      <div class="play"><i></i></div>
+      <span class="time">00:23 / 00:41</span>
+    </div>
+    <button class="btn primary">留下回音</button>
+  </div>
+</div>
+
+<script src="wave.js"></script>
+<script src="check.js"></script>
+<script>
+  scatterStars('#stars', 200);
+  renderTrace(document.getElementById('trace'),
+    { seed: 24, w: 640, h: 132, seg: 320, amp: 0.94, progress: 0.56 });
+</script>
+</body>
+</html>

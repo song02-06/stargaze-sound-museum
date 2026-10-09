@@ -1,0 +1,60 @@
+/* 星轨 · 声音博物馆 —— 设计令牌
+   这里的值是从 code2.0/设计参考/ 那五张参考稿里逐字搬过来的，
+   并且已经过了 impeccable 检测器（0 问题）。要改颜色，只改这里。 */
+
+:root {
+  /* 深空 */
+  --void: #04060b;
+  --deep: #080c15;
+
+  /* 文字四阶。最低两阶都实测过对比度，不再往下压：
+     --ink-3 → 5.6:1，--ink-4 → 4.7:1（WCAG AA 要求 4.5:1）。
+     想「更安静的灰」时会掉到 2:1，那是看不见，不是克制。 */
+  --ink: #e9eef7;
+  --ink-2: #98a3b6;
+  --ink-3: #7c879b;
+  --ink-4: #6e7a90;
+
+  /* 黄铜：唯一的强调色。用在编号、日期、地点这些「著录信息」上 */
+  --brass: #c9a96b;
+  --brass-2: rgba(201, 169, 107, 0.30);
+  --brass-3: rgba(201, 169, 107, 0.10);
+
+  /* 线条 */
+  --line: rgba(255, 255, 255, 0.07);
+  --line-2: rgba(255, 255, 255, 0.13);
+
+  /* 历史之声：另一套世界（纸） */
+  --paper: #e8dfc6;
+  --paper-2: #d8cba9;
+  --paper-3: #d3c6a4;
+  --paper-ink: #241d12;
+  --paper-ink-2: #5c4f36;
+  --stamp: #97402f;
+
+  /* 字体：全部用你机器上已装的，不引网络字体，所以没有 FOUT */
+  --serif: "Noto Serif SC", "Songti SC", serif;
+  --sans: "Noto Sans SC", "微软雅黑", system-ui, sans-serif;
+  --mono: "Consolas", "Courier New", monospace;
+
+  /* 节奏 */
+  --rail: 56px;
+  --measure: 34rem;        /* 正文行宽，约 65–75ch */
+
+  /* 动效：唯一那条缓动曲线，指数缓出 */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 180ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+
+  --z-stars: 0;
+  --z-content: 1;
+  --z-bar: 20;
+  --z-veil: 40;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --rail: 20px;
+  }
+}

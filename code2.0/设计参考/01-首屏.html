@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>01 首屏 · 深空展厅</title>
+<link rel="stylesheet" href="frame.css">
+<style>
+  .hero { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; }
+  .hero-line {
+    font-family: var(--serif); font-size: 31px; font-weight: 300;
+    letter-spacing: 0.10em; color: var(--ink-2);
+  }
+  .hero-line b { font-weight: 500; color: var(--ink); font-size: 34px; }
+
+  .actions { display: flex; align-items: center; gap: 30px; justify-content: center; }
+  .actions .ghost { color: var(--ink-2); }
+  .actions .ghost .arrow { color: var(--brass); margin-left: 6px; }
+
+  .recent { position: absolute; left: 56px; right: 56px; bottom: 46px; }
+  .recent-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    margin-top: 20px; border-top: 1px solid var(--line);
+  }
+  .recent-item { padding: 20px 30px 0 0; border-right: 1px solid var(--line); }
+  .recent-item:nth-child(2) { padding-left: 30px; }
+  .recent-item:nth-child(3) { padding-left: 30px; border-right: none; }
+  .recent-item h4 {
+    font-family: var(--serif); font-size: 15px; font-weight: 400;
+    letter-spacing: 0.05em; color: var(--ink); margin-bottom: 9px;
+  }
+  .recent-item .meta {
+    font-size: 11px; letter-spacing: 0.14em; color: var(--ink-4); margin-bottom: 7px;
+  }
+  .recent-item .when {
+    font-size: 11px; letter-spacing: 0.22em; color: rgba(201, 169, 107, 0.82);
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="nebula"></div>
+  <div class="stars" id="stars"></div>
+  <div class="vignette"></div>
+
+  <header class="topbar">
+    <div class="brand"><b>星轨</b> · 声音博物馆</div>
+    <nav class="nav">
+      <span class="on">馆藏</span>
+      <span>历史之声</span>
+      <span>我的声音</span>
+    </nav>
+  </header>
+
+  <div class="well" style="width:470px;height:470px;left:485px;top:96px;"></div>
+
+  <div class="hero" style="top:498px;">
+    <p class="hero-line">星空里沉了 <b>47</b> 段声音</p>
+  </div>
+
+  <div class="hero actions" style="top:584px;">
+    <button class="btn primary">打捞一段</button>
+    <button class="btn ghost">随便逛逛<span class="arrow">›</span></button>
+  </div>
+
+  <section class="recent">
+    <p class="label">最近被捞起</p>
+    <div class="recent-grid">
+      <article class="recent-item">
+        <h4>《外婆家屋檐下的雨》</h4>
+        <p class="meta">广州 · 老城区</p>
+        <p class="when">3 分钟前被捞起</p>
+      </article>
+      <article class="recent-item">
+        <h4>《凌晨四点的便利店》</h4>
+        <p class="meta">上海 · 弄堂口</p>
+        <p class="when">12 分钟前被捞起</p>
+      </article>
+      <article class="recent-item">
+        <h4>《台风过境这天》</h4>
+        <p class="meta">广州 · 天河</p>
+        <p class="when">27 分钟前被捞起</p>
+      </article>
+    </div>
+  </section>
+</div>
+
+<script src="wave.js"></script>
+<script src="check.js"></script>
+<script>
+  scatterStars('#stars', 260);
+</script>
+</body>
+</html>

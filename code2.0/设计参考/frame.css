@@ -1,0 +1,173 @@
+/* 星轨 · 声音博物馆 —— 视觉参考稿 · 方向 A「深空展厅」
+   共享样式。所有帧固定 1440 × 900，与 docs/ 下既有截图同一口径。 */
+
+:root {
+  --void: #04060b;
+  --deep: #080c15;
+
+  --ink: #e9eef7;
+  --ink-2: #98a3b6;
+  --ink-3: #7c879b;
+  --ink-4: #6e7a90;
+
+  --brass: #c9a96b;
+  --brass-2: rgba(201, 169, 107, 0.30);
+  --brass-3: rgba(201, 169, 107, 0.10);
+
+  --line: rgba(255, 255, 255, 0.07);
+  --line-2: rgba(255, 255, 255, 0.13);
+
+  --serif: "Noto Serif SC", serif;
+  --sans: "Noto Sans SC", "微软雅黑", sans-serif;
+  --mono: "Consolas", "Courier New", monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1440px; height: 900px; overflow: hidden; }
+
+body {
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.stage { position: relative; width: 1440px; height: 900px; overflow: hidden; }
+
+/* ---------- 背景层 ---------- */
+
+.nebula {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(900px 640px at 50% 38%, rgba(46, 76, 130, 0.20), transparent 70%),
+    radial-gradient(620px 440px at 79% 80%, rgba(72, 53, 112, 0.13), transparent 72%),
+    radial-gradient(700px 520px at 17% 20%, rgba(30, 62, 104, 0.13), transparent 70%);
+}
+
+.nebula.warm {
+  background:
+    radial-gradient(880px 620px at 50% 40%, rgba(120, 88, 44, 0.20), transparent 70%),
+    radial-gradient(560px 420px at 22% 82%, rgba(96, 58, 40, 0.12), transparent 72%),
+    radial-gradient(700px 520px at 84% 18%, rgba(80, 66, 40, 0.12), transparent 70%);
+}
+
+.stars { position: absolute; inset: 0; }
+.stars i {
+  position: absolute;
+  border-radius: 50%;
+  background: #cfe0ff;
+  box-shadow: 0 0 4px rgba(160, 195, 255, 0.55);
+}
+
+.vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(125% 105% at 50% 44%, transparent 42%, rgba(0, 0, 0, 0.74) 100%);
+}
+
+/* ---------- 骨架 ---------- */
+
+.topbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 78px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 56px;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.36em;
+  color: var(--ink-2);
+}
+
+.brand b { font-weight: 400; color: var(--ink); }
+
+.nav { display: flex; gap: 34px; font-size: 12px; letter-spacing: 0.16em; color: var(--ink-3); }
+.nav span.on { color: var(--ink-2); }
+
+.hairline { position: absolute; left: 56px; right: 56px; height: 1px; background: var(--line); }
+
+.label {
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  color: var(--ink-4);
+  text-transform: uppercase;
+}
+
+.brass { color: var(--brass); }
+.serif { font-family: var(--serif); }
+
+/* ---------- 控件 ---------- */
+
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 50px; padding: 0 32px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.015);
+  color: var(--ink);
+  font-family: var(--sans); font-size: 13px; font-weight: 400;
+  letter-spacing: 0.24em;
+  cursor: pointer;
+}
+
+.btn.primary {
+  border-color: var(--brass-2);
+  background: rgba(201, 169, 107, 0.045);
+}
+
+.btn.ghost { border-color: transparent; padding: 0 6px; letter-spacing: 0.18em; color: var(--ink-2); }
+
+.link-more {
+  font-size: 11px; letter-spacing: 0.30em; color: var(--brass);
+  border-bottom: 1px solid var(--brass-2); padding-bottom: 4px;
+}
+
+.play {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid var(--line-2);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.play i {
+  width: 0; height: 0; margin-left: 3px;
+  border-left: 9px solid var(--ink);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+
+.play.small { width: 30px; height: 30px; }
+.play.small i { border-left-width: 7px; border-top-width: 5px; border-bottom-width: 5px; }
+
+.time { font-family: var(--mono); font-size: 11px; letter-spacing: 0.10em; color: var(--ink-4); }
+
+/* ---------- 光源 ---------- */
+
+/* 「井口」——用同心细环做结构，不用柔光雾。
+   柔光雾是最典型的 AI 生成痕迹；同心环读起来像深井，也像打捞时的定位标线。 */
+.well { position: absolute; border-radius: 50%; border: 1px solid rgba(198, 218, 255, 0.13); }
+
+.well::before,
+.well::after { content: ""; position: absolute; border-radius: 50%; }
+.well::before { inset: 14%; border: 1px solid rgba(198, 218, 255, 0.095); }
+.well::after { inset: 30%; border: 1px solid rgba(198, 218, 255, 0.070); }
+
+/* 声波的中轴线 —— 替代原来那团背景柔光，让痕迹读起来像一次测量 */
+.baseline {
+  position: absolute; top: 300px; left: 340px; width: 760px; height: 1px;
+  background: linear-gradient(to right,
+    transparent, rgba(200, 218, 255, 0.16) 18%,
+    rgba(200, 218, 255, 0.16) 82%, transparent);
+}
+
+/* ---------- 音频痕迹 ---------- */
+
+.trace { display: block; overflow: visible; }
+.trace .dim { fill: none; stroke: rgba(223, 231, 245, 0.20); stroke-width: 1.3; }
+.trace .lit { fill: none; stroke: #e6edfa; stroke-width: 1.5; }
+.trace .head { fill: #ffffff; }
+
+.trace.warm .dim { stroke: rgba(214, 190, 144, 0.22); }
+.trace.warm .lit { stroke: #d8bb84; }
+.trace.warm .head { fill: #e8d5a8; }

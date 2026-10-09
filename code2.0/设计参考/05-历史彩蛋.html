@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>05 历史彩蛋 · 深空展厅</title>
+<link rel="stylesheet" href="frame.css">
+<style>
+  .tag {
+    position: absolute; left: 50%; transform: translateX(-50%); top: 104px;
+    font-size: 11px; letter-spacing: 0.42em; color: rgba(201, 169, 107, 0.88);
+    text-indent: 0.48em;
+  }
+
+  .card {
+    position: absolute; left: 400px; top: 152px; width: 640px; height: 392px;
+    padding: 44px 52px;
+    background: linear-gradient(168deg, #e8dfc6 0%, #ded2b3 58%, #d3c6a4 100%);
+    box-shadow: 0 22px 36px -20px rgba(0, 0, 0, 0.85);
+    transform: rotate(-0.35deg);
+  }
+
+  .card .row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.22em; color: #5c4f36;
+  }
+  .card .stamp {
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.24em;
+    color: #97402f; border: 1px solid rgba(151, 64, 47, 0.55);
+    padding: 5px 10px; transform: rotate(4deg);
+  }
+  .card h1 {
+    font-family: var(--serif); font-size: 31px; font-weight: 500;
+    letter-spacing: 0.05em; color: #241d12; margin-top: 30px;
+  }
+  .card .rule { height: 1px; background: rgba(80, 66, 42, 0.28); margin: 26px 0 24px; }
+  .card .body {
+    font-family: var(--serif); font-size: 15px; font-weight: 400; line-height: 2.1;
+    color: #4c4029;
+  }
+  .card .foot2 {
+    position: absolute; left: 52px; bottom: 40px;
+    font-size: 11px; letter-spacing: 0.24em; color: #5c4f36;
+  }
+
+  .trace-wrap { position: absolute; left: 440px; top: 588px; }
+
+  .controls {
+    position: absolute; left: 56px; right: 56px; top: 716px;
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+  }
+
+  .caption {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 84px;
+    font-family: var(--serif); font-size: 13px; font-weight: 300;
+    letter-spacing: 0.30em; color: rgba(201, 169, 107, 0.68); text-indent: 0.30em;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="nebula warm"></div>
+  <div class="stars" id="stars"></div>
+  <div class="vignette"></div>
+
+  <header class="topbar">
+    <div class="nav"><span>‹ 回到馆藏</span></div>
+    <div class="nav"><span class="brass">历史之声专区 ›</span></div>
+  </header>
+
+  <p class="tag">彩蛋 · 历史之声</p>
+
+  <div class="card">
+    <div class="row1">
+      <span>ARCHIVE Nº 1941-07</span>
+      <span class="stamp">馆藏</span>
+    </div>
+    <h1>对日宣战演说 · 片段</h1>
+    <div class="rule"></div>
+    <p class="body">1941 年 12 月 8 日，华盛顿。<br>这段声音被保存了 85 年。</p>
+    <p class="foot2">历史之声 · 公有领域素材</p>
+  </div>
+
+  <div class="trace-wrap"><svg class="trace warm" id="trace"></svg></div>
+
+  <div class="controls">
+    <div class="play"><i></i></div>
+    <span class="time" style="color:#a8946a;">00:31 / 00:52</span>
+  </div>
+
+  <p class="caption">你捞到了一段历史之声</p>
+</div>
+
+<script src="wave.js"></script>
+<script src="check.js"></script>
+<script>
+  scatterStars('#stars', 180);
+  renderTrace(document.getElementById('trace'),
+    { seed: 91, w: 560, h: 84, seg: 280, amp: 0.88, progress: 0.6 });
+</script>
+</body>
+</html>
