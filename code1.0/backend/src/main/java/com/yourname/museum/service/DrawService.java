@@ -60,7 +60,7 @@ public class DrawService {
             wantHeritage = false;
         } else {
             int total = bottleWeight + heritageWeight;
-            wantHeritage = random.nextInt(total) < bottleWeight;
+            wantHeritage = random.nextInt(total) < heritageWeight;
         }
 
         return wantHeritage ? drawHeritage(heritage) : drawBottle(bottles);
