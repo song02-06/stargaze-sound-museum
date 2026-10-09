@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # H2 文件模式：数据落在 backend/data/museum.mv.db，换电脑拷走即可
+    url: jdbc:h2:file:./data/museum;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  jackson:
+    default-property-inclusion: non_null
+
+museum:
+  audio-root: ./data/audio        # 音频总目录（bottle/ 与 heritage/ 两个子目录）
+  max-duration-ms: 60000          # 录音上限 60 秒
+  min-duration-ms: 3000           # 太短的录音直接拦截
+  audit:
+    # houbb：词库大、支持繁简/全半角/拼音变体识别（默认，对应计划书 4.1）
+    # dfa  ：自研实现，零依赖可离线，只做精确匹配，用作对照组与断网兜底
+    engine: houbb
+  draw:
+    bottle-weight: 70             # 抽到「普通人留言」的权重
+    heritage-weight: 30           # 抽到「历史声音彩蛋」的权重
+    recent-limit: 20              # 最近抽过的 N 条本轮不再抽
+  asr:
+    # mock：不联网、不需要 Key，用来跑通全链路与断网兜底
+    # baidu：百度短语音识别（需配下面三个环境变量）
+    provider: mock
+    baidu:
+      app-id: ${BAIDU_APP_ID:}
+      api-key: ${BAIDU_API_KEY:}
+      secret-key: ${BAIDU_SECRET_KEY:}
+  ai:
+    # mock：本地模板润色；deepseek：真实大模型
+    provider: mock
+    deepseek:
+      base-url: https://api.deepseek.com
+      api-key: ${AI_API_KEY:}
+      model: deepseek-chat
+      # 分开设两个超时（对应实施手册 5.1）：
+      # 连接 3 秒 —— 网络不通时快速失败；读取 15 秒 —— 保证「断网也在 15 秒内返回」这条验收线。
+      connect-timeout-ms: 3000
+      read-timeout-ms: 15000
+
+logging:
+  level:
+    com.yourname.museum: INFO
