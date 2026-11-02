@@ -1,173 +1,131 @@
 # 星轨 · 声音博物馆
 
-一个「星空下的声音漂流瓶」：用户留下一段话，AI 把它润色成一个小故事，审核通过后沉入星空；
-其他人随机捞起一段声音，偶尔捞到一段历史声音彩蛋。
+一个「星空下的声音漂流瓶」：用户录一段 10–60 秒的声音，写下它的故事和语境，
+审核通过后沉入星空；其他人随机捞起一段声音，偶尔捞到一段历史声音的展位示例。
 
-本项目是《项目计划书.md》与《实施手册.md》对应的**可运行 Demo**，
-覆盖阶段 0–2 与阶段 6 的骨架，ASR 与 AI 默认走 Mock，**不需要任何 API Key 就能跑起来**。
+> **所有代码都放在 `code/` 下，后端与前端各自独立。**
+> 本轮实施记录见 [`docs/本轮实施结果.md`](docs/本轮实施结果.md)。
 
 ## 技术栈
 
 | 层 | 选型 |
 | --- | --- |
-| 后端 | Spring Boot 3.2.12 / Java 17 / Spring Data JPA / H2 文件库 |
-| 前端 | Vue 3 + Vite + Three.js |
-| 视觉 | Three.js 自定义 Shader 星空 + 星轨弧线 + 流星雨，由音频频谱驱动 |
-| 审核 | `houbb/sensitive-word`（规则路，Apache-2.0）+ AI 判定（AI 路）+ 人工复审（人工路） |
-
-## 快速开始
-
-### 1. 生成占位音频（只需一次）
-
-```bash
-node tools/gen-seed-audio.mjs
-```
-
-会在 `backend/data/audio/` 下生成 10 个 16k 单声道 WAV，
-让 Demo 在断网、没有任何素材的情况下也能完整演示。
-
-### 2. 启动后端
-
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-首次启动会自动建表并写入种子数据（5 条留言瓶 + 5 条历史彩蛋）。
-验证：浏览器打开 <http://localhost:8080/api/ping>，应返回 `pong`。
-
-### 3. 启动前端
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-打开 <http://localhost:5173>。
-
-> 录音需要浏览器麦克风权限，`localhost` 属于安全上下文，可以直接用；
-> 若用局域网 IP 访问，需要 HTTPS。
-
-## 仓库结构
-
-本仓库是「星轨 · 声音博物馆」的完整交付，包含两个迭代版本与配套文档：
-
-| 路径 | 说明 |
-| --- | --- |
-| `code1.0/` | 第一版实现：`backend/`（Spring Boot，包名 `com.yourname.museum`）+ `frontend/`（Vue3 + Vite）+ `tools/` |
-| `code2.0/` | 第二版实现：重构后的后端（包名 `com.starmuseum`，拆出 `asr` / `audit` / `sign` / `media` / `web` 分层）与前端（Vue Router + 多视图），另含 `设计参考/` 高保真稿 |
-| `docs/` | 素材来源登记、参考项目核实结果、实现截图 |
-| `tools/verify-sync.ps1` | 本地与远程仓库同步校验脚本，见下文 |
-| `实施手册.md`、`design-qa.md` | 实施步骤与设计自查结论 |
-
-> `code1.0/`、`code2.0/` 下各自保留了独立的 `.gitignore`。根目录 `.gitignore` 额外排除了
-> `reference/`（863 MB 的第三方参考项目，他人代码、各有许可证，不随本仓库分发）
-> 以及 `node_modules/`、`target/`、`dist/`、运行期 `data/` 等构建与运行产物。
-
-## 校验本地与远程是否同步
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools/verify-sync.ps1
-```
-
-依次校验**提交历史、文件清单、工作区状态、分支结构**四项，全部一致时输出
-「本地与远程完全同步 ✔」并以退出码 `0` 结束；存在差异时列出具体条目并返回 `1`。
+| 前端 | Vue 3 + Vite（响应式用户 Web 端 + 独立管理 Web 端） |
+| 后端 | Spring Boot 3.2.12 / Java 17 / Spring Data JPA |
+| 数据库 | H2 文件库（`./data/museum.mv.db`），JPA 持久化 |
+| 审核 | 本地 DFA 规则词表 + 人工复审队列（**没有接入真实大模型审核**） |
+| 语音识别 | 百度短语音识别（可选）；未配置时语音回音**转人工** |
+| 部署 | 单台 Linux + Caddy（HTTPS / 静态文件 / 反向代理）+ systemd |
 
 ## 目录结构
 
 ```
-├─ backend/                      Spring Boot 单体服务
-│  └─ src/main/java/com/yourname/museum/
-│     ├─ controller/             Ping / Bottle / Draw / Admin
-│     ├─ service/                BottleService / AuditService / DrawService / FileStorageService
-│     ├─ client/                 AsrClient / AiClient —— 所有外部调用都收敛在这里
-│     ├─ entity/ repository/ dto/ config/ common/
-├─ frontend/                     Vue3 + Vite
-│  └─ src/
-│     ├─ components/StarField.vue    Three.js 星轨 + 流星雨（音频驱动）
-│     ├─ components/Recorder.vue     录音 + 前端转 16k WAV
-│     └─ utils/wav.js                webm/opus → WAV 的重采样与封装
-├─ tools/gen-seed-audio.mjs      占位音频生成脚本
-└─ docs/                         素材来源登记、参考项目核实结果
+├─ code/                     ← 全部代码
+│  ├─ backend/               Spring Boot 单体服务（src/main/java/com/starmuseum/）
+│  ├─ frontend/              Vue 3 + Vite
+│  ├─ tools/gen-audio.mjs    演示音频生成脚本（合成信号，不是真录音）
+│  └─ deploy/                部署模板：Caddyfile / systemd unit / 环境变量示例
+├─ docs/
+│  ├─ PRODUCT.md · 产品定义.md
+│  ├─ 设计参考/              视觉参考稿与实现截图
+│  ├─ 视频素材/              生成原片与最终成片
+│  ├─ 本轮实施结果.md         这一轮改了什么、怎么验证、哪些没做
+│  ├─ 部署说明.md             服务器上的完整落地步骤（含备份与恢复）
+│  ├─ 验收演示.md             A 作者 / B 听众 / C 管理员 三会话演示脚本
+│  ├─ 数据库说明.md           表、字段、关系、演示查询
+│  ├─ 团队贡献.md             每人负责什么、对应哪些文件与提交
+│  ├─ 素材来源.md             音频素材的来源与授权登记
+│  └─ README.md               文档分类索引（含评审报告与历史资料）
+└─ README.md                 项目总说明
 ```
 
-## 接口一览
+## 快速开始（本机）
 
-| 方法 | 路径 | 说明 |
-| --- | --- | --- |
-| GET | `/api/ping` | 健康检查，顺带返回当前 provider 与语料规模 |
-| POST | `/api/bottle` | 上传音频（multipart：`file` / `note` / `durationMs`） |
-| GET | `/api/bottle/{id}` | 查询单条留言 |
-| GET | `/api/bottle/recent` | 最近通过的留言 |
-| GET | `/api/draw` | 随机捞取（权重 7:3，本轮不重复） |
-| GET | `/api/admin/queue` | 人工复审队列 |
-| POST | `/api/admin/review/{id}?pass=true` | 人工通过／驳回 |
-| GET | `/api/admin/audit-records` | 审核流水（论文实验二的数据源） |
-| GET | `/audio/**` | 音频静态资源，支持 Range 请求 |
-
-## 切换到真实云服务
-
-默认 `museum.asr.provider=mock`、`museum.ai.provider=mock`，不联网、不花钱。
-要接真实服务，只改 `backend/src/main/resources/application.yml` 两行：
-
-```yaml
-museum:
-  asr:
-    provider: baidu       # 需要 BAIDU_APP_ID / BAIDU_API_KEY / BAIDU_SECRET_KEY
-  ai:
-    provider: deepseek    # 需要 AI_API_KEY
-```
-
-密钥只放环境变量，**不要写进代码、不要提交 Git**：
-
-```powershell
-setx BAIDU_APP_ID "你的AppID"
-setx BAIDU_API_KEY "你的APIKey"
-setx BAIDU_SECRET_KEY "你的SecretKey"
-setx AI_API_KEY "sk-你的DeepSeekKey"
-```
-
-两个 Key 都没配也能完整演示：Mock 实现会一直保留，同时它就是断网时的兜底。
-
-## 审核引擎（阶段 4）
-
-规则路有两个可切换的实现，配置项是 `museum.audit.engine`：
-
-| 值 | 引擎 | 特点 |
-| --- | --- | --- |
-| `houbb`（默认） | houbb/sensitive-word | 内置约 6 万条词库，支持繁简互换、全半角、拼音变体识别 |
-| `dfa` | 自研 DFA | 约 80 行、零依赖、可离线，只做精确匹配，用作对照组与断网兜底 |
-
-词表分散在 `backend/src/main/resources/sensitive/` 下四份文件，各司其职：
-
-| 文件 | 作用 |
-| --- | --- |
-| `deny-words.txt` | 拦截词，命中直接拒绝 |
-| `extra-words.txt` | 按测试集反馈持续补充的词 |
-| `review-only.txt` | 隐私类词，命中后转人工复审而不是拒绝 |
-| `whitelist.txt` | 白名单，消除「正常词含敏感子串」的误伤 |
-
-> 实现上的一个坑：`wordDeny(...)` 是**替换**而不是追加。直接传自定义词表会把库自带的
-> 6 万词全丢掉，必须用 `WordDenys.chains(WordDenys.defaults(), 自定义)` 包一层。
-> 白名单同理用 `WordAllows.chains(...)`。
-
-## 运行测试
+### 1. 生成演示音频（只需一次）
 
 ```bash
-cd backend
-mvn test
+cd code
+node tools/gen-audio.mjs
 ```
 
-当前覆盖阶段 4 的验收项：10 条验收样本（违规 5 / 正常 5）、隐私词转复审、
-白名单消除误伤。测试直接复用 `AuditService.classifyRule`，保证与线上判定一致。
+在 `code/backend/data/audio/` 下生成合成占位 WAV，并写出实际时长与波形到
+`code/backend/src/main/resources/seed/audio-manifest.json`。**没有这一步，页面有数据但播放 404。**
 
-## 已知待办
+### 2. 启动后端
 
-- [ ] `BaiduAsrClient` 按官方 REST 文档编写，尚未用真实 Key 联网验证 —— 对应手册「阶段 1 任务 A」。
-- [ ] `DeepSeekAiClient` 同上。**降级分支已完整验证**（错误 Key、不可达地址两条路径），
-      正常润色分支仍需真实 Key。
-- [ ] 星轨 Bloom 后期未接入，`StarField.vue` 里留了 TODO 与注意事项。
-- [ ] `docs/素材来源.md` 里的历史彩蛋仍是占位素材，需按计划书第九章替换为有明确出处的音频。
-- [ ] 管理后台目前只有接口，没有独立页面。
-- [ ] 自动化测试目前只覆盖审核模块，Service 层其余部分（抽取权重、文件存储、上传校验）尚未覆盖。
+```bash
+cd code/backend
+mvn spring-boot:run          # http://127.0.0.1:8081
+```
+
+首次启动自动建表并写入演示数据。
+验证：<http://127.0.0.1:8081/api/ping> 应返回馆藏规模。
+
+要进管理端，先配口令再启动（**留空 = 管理后台关闭**）：
+
+```powershell
+$env:ADMIN_TOKEN = "本地随便一段足够长的口令"
+mvn spring-boot:run
+```
+
+### 3. 启动前端
+
+```bash
+cd code/frontend
+npm install
+npm run dev                  # http://127.0.0.1:5174
+```
+
+打开 <http://127.0.0.1:5174>，管理端在 <http://127.0.0.1:5174/admin>。
+
+> 录音需要浏览器麦克风权限。`localhost` 属于安全上下文，可以直接用；
+> 用其他设备通过局域网 IP 访问时必须走 HTTPS，否则**能看不能录**。
+
+### 4. 跑测试与构建
+
+```bash
+cd code/backend && mvn test        # 78 个用例
+cd code/frontend && npm run build  # 产物在 dist/
+```
+
+## 部署到服务器
+
+单台 Linux：Caddy 提供 HTTPS + 前端静态文件，Spring Boot 以 systemd 常驻，
+H2 文件库与音频目录固定在服务器磁盘。
+
+- 完整步骤：[`docs/部署说明.md`](docs/部署说明.md)
+- 模板文件：[`code/deploy/Caddyfile`](code/deploy/Caddyfile)、[`code/deploy/starmuseum.service`](code/deploy/starmuseum.service)、[`code/deploy/starmuseum.env.example`](code/deploy/starmuseum.env.example)
+- 演示脚本：[`docs/验收演示.md`](docs/验收演示.md)
+
+**没有服务器访问权限或域名时，只能完成部署材料，不能宣称「已部署成功」。**
+
+## 环境变量
+
+| 变量 | 作用 |
+| --- | --- |
+| `ADMIN_TOKEN` | 管理口令。留空 = 管理后台关闭（安全默认） |
+| `SPRING_DATASOURCE_URL` | H2 文件库地址，部署时用**绝对路径** |
+| `MUSEUM_AUDIO_ROOT` | 音频根目录，部署时用**绝对路径** |
+| `SERVER_ADDRESS` / `SERVER_PORT` | 监听地址与端口（部署时 `127.0.0.1:8081`） |
+| `ASR_PROVIDER` | `mock`（默认，语音回音转人工）或 `baidu` |
+| `BAIDU_APP_ID` / `BAIDU_API_KEY` / `BAIDU_SECRET_KEY` | 百度短语音识别密钥，只放服务器 |
+| `MUSEUM_SIGN_PROVIDER` / `AI_BASE_URL` / `AI_API_KEY` / `AI_MODEL` | 展签远程压缩（可选，失败会退回本地压缩） |
+
+## 这一轮改动摘要
+
+- **完整 CRUD**：投稿 → 我的声音 → 编辑（同一件、重审、编号不变）→ 删除（清全部关联音频）。
+- **多端互动**：通知表 + 5 秒轮询。投稿进管理端、审核结果回作者、回音只在实际公开时送达。
+- **回音收件箱与状态**：发送人能看到自己的回音在哪、为什么没通过；失败不清空草稿。
+- **管理端能听**：待审语音回音带 `audioUrl`，没有转写文本也能直接播。
+- **审核如实**：标题／故事／地点分字段过规则；演唱类强制人工；删掉假的「AI 路」。
+- **不再造假识别**：没配真实 ASR 时语音回音转人工，不生成伪转写。
+- **工程修复**：编号改用数据库序列（删号不重用）、删除清全部语音文件、打捞按类型去重、馆藏检索。
+- **部署材料**：`deploy/` 三个文件 + 部署/恢复文档。
+
+细节、验证命令与未完成事项：**[`docs/本轮实施结果.md`](docs/本轮实施结果.md)**。
+
+## 文档与视频素材
+
+- [文档索引](docs/README.md)：产品定义、开发部署、验收、设计方案、评审与历史资料。
+- [视频素材目录](docs/视频素材/README.md)：后续生成原片、剪辑成片及命名约定。
+- [视频动效设计方案](docs/视频动效设计方案.md)：当前打捞视频的分镜与接入建议，尚未实施。

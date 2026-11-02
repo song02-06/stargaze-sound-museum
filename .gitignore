@@ -5,9 +5,6 @@ reference/
 .run/
 *.log
 
-# ---- 根目录杂项（疑似误建的空文件） ----
-/0
-
 # ---- 各子项目另有自己的 .gitignore，这里兜底一遍 ----
 node_modules/
 dist/

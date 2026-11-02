@@ -1,0 +1,35 @@
+[Unit]
+Description=Starmuseum backend (Spring Boot)
+After=network.target
+
+[Service]
+Type=simple
+# 专用服务用户，不能是 root：它要读写 data 目录
+User=starmuseum
+Group=starmuseum
+WorkingDirectory=/srv/starmuseum
+
+# 真实密钥只放这个文件（权限 600，属主 starmuseum，不提交 Git）
+EnvironmentFile=/etc/starmuseum/starmuseum.env
+
+# 数据与音频用绝对路径（见 EnvironmentFile），
+# 这样换一个工作目录启动也不会出现「库和音频都没了」的假象
+ExecStart=/usr/bin/java -jar /srv/starmuseum/app/starmuseum-2.0.0.jar
+
+# 进程挂了自动拉起来；5 秒一次，不要立刻风暴重启
+Restart=on-failure
+RestartSec=5
+
+# 日志走 journald，用 journalctl -u starmuseum -f 看
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=starmuseum
+
+# 简单的加固：只允许写 /srv/starmuseum 与 /tmp
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/srv/starmuseum
+
+[Install]
+WantedBy=multi-user.target
