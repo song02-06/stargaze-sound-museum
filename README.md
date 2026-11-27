@@ -84,7 +84,7 @@ npm run dev                  # http://127.0.0.1:5174
 ### 4. 跑测试与构建
 
 ```bash
-cd code/backend && mvn test        # 78 个用例
+cd code/backend && mvn test        # 86 个用例
 cd code/frontend && npm run build  # 产物在 dist/
 ```
 

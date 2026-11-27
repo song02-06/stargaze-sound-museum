@@ -115,6 +115,7 @@ export function usePlayer() {
   onUnmounted(() => {
     if (audio) {
       audio.pause()
+      detach()
       audio = null
     }
   })
