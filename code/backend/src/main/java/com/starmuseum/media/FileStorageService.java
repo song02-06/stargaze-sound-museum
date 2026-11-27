@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -26,6 +27,10 @@ import java.util.UUID;
 public class FileStorageService {
 
     private static final Logger log = LoggerFactory.getLogger(FileStorageService.class);
+
+    /** 允许落盘的音频扩展名。不在这里的一律拒绝，不信任用户给的文件名。 */
+    private static final Set<String> ALLOWED_EXTENSIONS =
+            Set.of(".wav", ".webm", ".ogg", ".mp3", ".m4a");
 
     private final Path root;
 
@@ -111,10 +116,16 @@ public class FileStorageService {
                 return ".mp3";
             }
         }
+        // 回退到原始文件名时只能取白名单里的扩展名：
+        // 早先只校验了长度，用户传 evil.html 就会被原样落盘，
+        // 而 /audio/** 是静态映射，同源的 HTML/SVG 能读到 localStorage 里的会话。
         if (originalName != null) {
             int dot = originalName.lastIndexOf('.');
-            if (dot > 0 && originalName.length() - dot <= 6) {
-                return originalName.substring(dot).toLowerCase();
+            if (dot > 0) {
+                String ext = originalName.substring(dot).toLowerCase();
+                if (ALLOWED_EXTENSIONS.contains(ext)) {
+                    return ext;
+                }
             }
         }
         throw new BizException("不支持的音频格式");
