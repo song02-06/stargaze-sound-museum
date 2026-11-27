@@ -305,6 +305,24 @@ class MuseumFlowTest {
 
     @Test
     @Order(9)
+    @DisplayName("别人的投稿也删不动、编辑源也读不到")
+    void strangerCannotDeleteOrReadSource() {
+        // 三条对外暴露的入口都要认所有权，只测 PATCH 会漏掉另外两条。
+        ResponseEntity<JsonNode> read = call(HttpMethod.GET, "/api/mine/uploads/" + mainNo, listenerId, null);
+        assertThat(read.getStatusCode().is4xxClientError()).as("读别人的编辑源应被拒绝").isTrue();
+        assertThat(read.getBody().path("msg").asText()).contains("不是你埋下的");
+
+        ResponseEntity<JsonNode> del = call(HttpMethod.DELETE, "/api/exhibits/" + mainNo, listenerId, null);
+        assertThat(del.getStatusCode().is4xxClientError()).as("删别人的投稿应被拒绝").isTrue();
+        assertThat(del.getBody().path("msg").asText()).contains("不是你埋下的");
+
+        // 拒绝之后那件东西必须还在——否则「报错了但已经删了」比放行更糟。
+        JsonNode still = data(call(HttpMethod.GET, "/api/exhibits/" + mainNo, 0, null));
+        assertThat(still.path("no").asText()).isEqualTo(mainNo);
+    }
+
+    @Test
+    @Order(10)
     @DisplayName("改出问题就退回审核：命中拦截词 → 驳回，并从公共馆藏消失")
     void offendingEditHidesFromPublic() {
         JsonNode updated = data(call(HttpMethod.PATCH, "/api/exhibits/" + mainNo, authorId,
@@ -344,7 +362,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     @DisplayName("标题和地点也要进规则审核，不能只查故事")
     void titleAndPlaceAreAudited() {
         JsonNode bad = data(upload(authorId, AUDIO.resolve("exhibits/store.wav"),
@@ -359,7 +377,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(11)
+    @Order(12)
     @DisplayName("文字回音通过才通知作者；语音回音（未配 ASR）转人工，不冒充送达")
     void echoNotificationsOnlyWhenDelivered() {
         JsonNode text = data(sendTextEcho(listenerId, mainNo, "这段雨声我也听过。"));
@@ -381,7 +399,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(12)
+    @Order(13)
     @DisplayName("待审语音回音在管理端能拿到可播放的音频地址")
     void pendingVoiceEchoExposesAudio() {
         JsonNode item = null;
@@ -397,7 +415,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(13)
+    @Order(14)
     @DisplayName("人工通过语音回音 → 发送人收到结果，作者收到回音，公开列表可见")
     void manualEchoPassNotifiesBothSides() {
         JsonNode pending = null;
@@ -438,7 +456,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(14)
+    @Order(15)
     @DisplayName("驳回必须写原因；已决定的记录不能再被改结论")
     void rejectNeedsReasonAndReviewIsFinal() {
         // 先造一条真正在待审状态的语音回音
@@ -468,7 +486,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(15)
+    @Order(16)
     @DisplayName("删除展品：全部关联语音文件一起消失，审核流水保留")
     void deleteCleansAllEchoAudio() throws Exception {
         JsonNode created = data(upload(authorId, AUDIO.resolve("exhibits/typhoon.wav"),
@@ -498,7 +516,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(16)
+    @Order(17)
     @DisplayName("删除最大编号之后，新投稿不会重用旧编号")
     void numbersAreNotReused() {
         JsonNode first = data(upload(authorId, AUDIO.resolve("exhibits/well.wav"),
@@ -517,7 +535,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(17)
+    @Order(18)
     @DisplayName("馆藏检索：标题/故事/地点命中，检索不到就是空列表")
     void searchFindsByKeyword() {
         JsonNode hit = data(call(HttpMethod.GET, "/api/exhibits?q=屋檐", 0, null));
@@ -533,7 +551,7 @@ class MuseumFlowTest {
     }
 
     @Test
-    @Order(18)
+    @Order(19)
     @DisplayName("打捞去重分类型：EXHIBIT 与 HERITAGE 的同号 id 是两个对象")
     void drawDedupeSeparatesTypes() {
         // 这里验证的是可见行为：连续打捞不会因为「历史之声 1 号」而排掉「用户展品 1 号」，
